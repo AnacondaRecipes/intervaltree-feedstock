@@ -1,23 +1,25 @@
-{% set version = "3.1.0" %}
+{% set name = "intervaltree" %}
+{% set version = "3.2.1" %}
 
 package:
-  name: intervaltree
+  name: {{ name }}
   version: {{ version }}
 
 source:
-  fn: intervaltree-{{ version }}.tar.gz
-  url: https://pypi.io/packages/source/i/intervaltree/intervaltree-{{ version }}.tar.gz
-  sha256: 902b1b88936918f9b2a19e0e5eb7ccb430ae45cde4f39ea4b36932920d33952d
+  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: f3f7e8baeb7dd75b9f7a6d33cf3ec10025984a8e66e3016d537e52130c73cfe2
 
 build:
   noarch: python
   number: 0
-  script: python -m pip install --no-deps --ignore-installed .
+  script: {{ PYTHON }} -m pip install --no-deps --no-build-isolation --ignore-installed .
 
 requirements:
   host:
     - pip
     - python
+    - hatchling
+    - uv-dynamic-versioning
   run:
     - python
     - sortedcontainers
@@ -25,13 +27,28 @@ requirements:
 test:
   imports:
     - intervaltree
+  source_files:
+    - test/
+  requires:
+    - pip
+    - pytest
+  commands:
+    - pip check
+    - pytest -v test/
 
 about:
   home: https://github.com/chaimleib/intervaltree
   license: Apache-2.0
-  license_file: LICENSE.txt
-  summary: 'Editable interval tree data structure for Python 2 and 3'
   license_family: APACHE
+  license_file: LICENSE.txt
+  summary: A mutable, self-balancing interval tree.
+  description: |
+    A mutable, self-balancing interval tree for Python 2 and 3.
+    Queries may be by point, by range overlap, or by range envelopment.
+    This library was designed to allow tagging text and time intervals,
+    where the intervals include the lower bound but not the upper bound.
+  dev_url: https://github.com/chaimleib/intervaltree
+  doc_url: https://github.com/chaimleib/intervaltree
 
 extra:
   recipe-maintainers:
